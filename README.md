@@ -1,3 +1,6 @@
+**Feel free to fork this template, revise, 
+and use for your CID**
+
 # [CID-TeamName]: [Project Title - e.g., Mapping Housing Injustice in NYC]
 
 ## Critical Research Question (CRQ)
