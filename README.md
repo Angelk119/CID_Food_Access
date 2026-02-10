@@ -155,6 +155,4 @@ U.S. Department of Agriculture Economic Research Service. (n.d.). Definitions of
 
 ---
 
-If you'd like, I can next **add badges, a table of contents, or GitHub preview styling** to make it look more professional.
-
 
