@@ -1,10 +1,12 @@
 -- STAR SCHEMA: NYC Food & Shelter Access Database
 -- 1. DIMENSION TABLES
 
--- dim_date: 
+-- dim_date: Date dimension with year, month, and YearMonth
 CREATE TABLE dim_date (
     date_id     INT         PRIMARY KEY,
     year        INT         NOT NULL,
+    month       INT,
+    YearMonth   TEXT
 );
 
 -- dim_map: where shelters are located (NTA-level)
@@ -17,6 +19,7 @@ CREATE TABLE dim_map (
     boro_name   TEXT,
     the_geom_wkt MULTIPOLYGON
 );
+
 
 -- dim_cdta: bridge to connect shelter facts to dim_map — extracted from dim_map to allow clean FK from shelter fact
 CREATE TABLE dim_cdta (
@@ -52,14 +55,15 @@ CREATE TABLE bridge_efap_site_nta (
 -- fact_neighborhood_prioritization
 CREATE TABLE fact_neighborhood_prioritization (
     nta_id                      TEXT        NOT NULL,
+    date_id                     INT         NOT NULL,
     weighted_score              DECIMAL,
     food_insecure_percentage    DECIMAL,
     supply_gap                  DECIMAL,
     vulnerable_pop_percentage   DECIMAL,
-    UNIQUE (nta_id),
+    is_high_priority            INT,
+    UNIQUE (nta_id, date_id),
     FOREIGN KEY (nta_id)  REFERENCES dim_map (nta_id), -- nta_id is FK only becauce it reference dimensions, not identify the fact
-
-);
+    FOREIGN KEY (date_id) REFERENCES dim_date (date_id) )
 
 
 -- fact_food_site_coverage
