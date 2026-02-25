@@ -20,19 +20,19 @@ How does the availability of emergency food assistance sites across Neighborhood
 
 ---
 
-## Actionable Recommendations
+## Key Actionable Recommendations
 
 ### Policy
 
-Coordinate planning between the NYC Department of Homeless Services and the Mayor’s Office of Food Policy so emergency food resources expand proportionally in neighborhoods with the highest shelter-related food insecurity.
+Adopt equity-based funding that prioritizes High Priority NTAs (top 25% most structurally vulnerable) so emergency food infrastructure scales proportionally with neighborhood need.
 
 ### Resource Allocation
 
-Increase sustained funding and operational support for nonprofit emergency food providers in neighborhoods with high shelter populations but limited food site density.
+Increase and strategically place EFAP sites in neighborhoods with low coverage ratios to better align food supply with food insecurity intensity.
 
 ### Data & Technology
 
-Develop a neighborhood-level integrated data system linking shelter populations, food insecurity metrics, and food site capacity to guide equitable long-term planning.
+Implement a real-time dashboard using coverage_ratio and weighted_score to monitor whether emergency food infrastructure is proportionally meeting neighborhood vulnerability.
 
 ---
 
