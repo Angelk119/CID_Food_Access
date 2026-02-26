@@ -76,7 +76,7 @@ Explain how AI supported:
 
 # Ibrahima – AI Usage Process
 
-# 2. AI Tools Used
+# 1. AI Tools Used
 
 | Tool | Provider | Version | Primary Use |
 |------|----------|---------|-------------|
@@ -89,7 +89,7 @@ Explain how AI supported:
 
 ---
 
-# 3. AI Use by Technical Category
+# 2. AI Use by Technical Category
 
 ## A. SQL Schema Design
 
@@ -288,7 +288,7 @@ Write an executive summary connecting these findings to our research question:
 
 ---
 
-# 4. Validation Framework
+# 3. Validation Framework
 
 For all AI outputs, we followed this validation process:
 
@@ -302,7 +302,7 @@ For all AI outputs, we followed this validation process:
 
 ---
 
-# 5. What Was Rejected or Significantly Modified
+# 4. What Was Rejected or Significantly Modified
 
 | AI Suggestion | Reason for Rejection/Modification |
 |---------------|----------------------------------|
@@ -315,7 +315,7 @@ For all AI outputs, we followed this validation process:
 
 ---
 
-# 6. Risks, Limitations, and Ethical Considerations
+# 5. Risks, Limitations, and Ethical Considerations
 
 ## Risks of AI Use in This Project
 
@@ -343,7 +343,7 @@ For all AI outputs, we followed this validation process:
 
 ---
 
-# 7. Summary of AI Contribution
+# 6. Summary of AI Contribution
 
 | Category | AI Contribution Level | Human Contribution Level |
 |----------|----------------------|-------------------------|
@@ -357,7 +357,7 @@ For all AI outputs, we followed this validation process:
 
 ---
 
-# 8. Lessons Learned
+# 7. Lessons Learned
 
 1. **AI is a tool and is best to accelerate our process, not replacement** - It speeds up coding but doesn't replace our understanding
 2. **Always verify AI outputs** - Even confident-sounding AI can be wrong
