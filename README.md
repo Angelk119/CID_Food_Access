@@ -273,20 +273,26 @@ We acknowledge and appreciate the work of the New York City Open Data program an
 - **Angel Bautista — Project Manager** | [LinkedIn](https://www.linkedin.com/in/angelgbautista/)
    - Contributed to policy interpretation and executive messaging
    - Coordinated cross-functional workflow and milestone tracking
+ 
+  
 - **Ayema Qureshi — Analytics Engineer / Data Modeler** | [LinkedIn](https://www.linkedin.com/in/ayemaqureshi/)
-  - Defined project scope and research framing
-  - Led stakeholder narrative alignment and presentation strategy
-  - Designed star schema and relational data model for NTA-level analysis
-  - Conducted exploratory data analysis (EFAP + structural indicators)
-  - Built Tableau dashboard (alignment framework, KPI logic, quadrant analysis)
-  - Co-developed statistical testing and modeling documentation
-  - Translated technical findings into executive-facing insights and presentation materials 
+  - Defined critical research question (CRQ), project scope, and analytical framing aligned with DHS and food policy stakeholders
+  - Designed and implemented star schema architecture, including fact tables, dimension tables, and bridge logic to align EFAP, prioritization, and shelter datasets at the NTA level
+  - Engineered program level features and aggregated program-level service indicators (kitchen access, weekend availability)
+  - Led exploratory data analysis (EFAP + structural vulnerability indicators), identifying distributional patterns and misalignment between need and supply
+  - Built Tableau dashboard to operationalize alignment framework, including KPI logic, quadrant segmentation, and stakeholder-ready visual narratives
+  - Co-developed statistical methodology and modeling documentation, translating EDA findings into formal testable hypotheses
+  - Translated technical outputs into executive-facing insights, framing results around system alignment rather than neighborhood deficit
+ 
+  
 - **Ibrahima Diallo — Data Engineer / ETL Lead** | [LinkedIn](https://www.linkedin.com/in/ibranova/)
-  - Built ETL pipelines and data processing scripts
-  - Led statistical modeling implementation (Logistic Regression, Model 2 selection)
-  - Developed and deployed Streamlit prediction application
-  - Conducted model evaluation, validation, and performance reporting
-  - Co-developed technical documentation and presentation materials
+  - Built ETL pipelines and data processing scripts, including feature engineering for modeling datasets and alignment of neighborhood-level inputs
+  - Led statistical modeling implementation, developing and comparing Logistic Regression models (Model 1 vs Model 2), applying L2 regularization, and selecting the final extended feature model
+  - Implemented statistical tests (independent t-tests, Spearman correlation) to validate group differences prior to modeling
+  - Engineered preprocessing pipeline, including feature scaling and model serialization (scaler.pkl, coverage_model.pkl, model_metadata.json) for reproducible deployment
+  - Conducted model evaluation and validation, reporting Accuracy, Precision, Recall, F1 Score, and confusion matrix performance with threshold tuning
+  - Developed and deployed Streamlit prediction application, integrating model artifacts and building interactive performance and feature impact views
+  - Co-developed technical documentation and presentation materials, translating modeling insights into stakeholder-facing explanations 
 
 --- 
 
