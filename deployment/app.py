@@ -123,20 +123,19 @@ st.markdown('<p class="tagline">Identify neighborhoods that need more food assis
 # SIDEBAR
 # =============================================================================
 st.sidebar.markdown("## 📊 Model Performance")
-st.sidebar.metric("✅ Accuracy", "86%")
-st.sidebar.metric("🎯 Precision (High)", "91%")
-st.sidebar.metric("🔍 Recall (Low)", "92%")
+st.sidebar.metric("Precision (High)", "91%")
+st.sidebar.metric("Recall (Catch low coverage neighborhood)", "92%")
 st.sidebar.caption(f"Trained on {meta['training_info']['total_samples']} NYC neighborhoods")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("## 🎛️ Neighborhood Details")
+st.sidebar.markdown("## Input Neighborhood Details")
 
 # Get feature stats for slider ranges
 feat_stats = meta['feature_statistics']
 
 # Input widgets
 food_insecure = st.sidebar.slider(
-    "🍽️ Food Insecurity Rate (%)",
+    "Food Insecurity Rate (%)",
     min_value=0.0,
     max_value=40.0,
     value=15.0,
@@ -145,7 +144,7 @@ food_insecure = st.sidebar.slider(
 )
 
 unemployment = st.sidebar.slider(
-    "💼 Unemployment Rate (%)",
+    "Unemployment Rate (%)",
     min_value=0.0,
     max_value=20.0,
     value=8.0,
@@ -154,26 +153,26 @@ unemployment = st.sidebar.slider(
 )
 
 high_shelter = st.sidebar.checkbox(
-    "🏠 High Shelter Population",
+    "High Shelter Population",
     value=False,
     help="Above-average shelter population in this area?"
 )
 
 has_kitchen = st.sidebar.checkbox(
-    "🍲 Has Soup Kitchen",
+    "Has Soup Kitchen",
     value=False,
     help="Are there soup kitchens in this neighborhood?"
 )
 
 has_weekend = st.sidebar.checkbox(
-    "📅 Has Weekend Hours",
+    "Has Weekend Hours",
     value=False,
     help="Are food sites open on weekends?"
 )
 
 st.sidebar.markdown("---")
 
-predict_btn = st.sidebar.button("🔮 Predict Coverage", type="primary", use_container_width=True)
+predict_btn = st.sidebar.button("Predict Coverage", type="primary", use_container_width=True)
 
 # =============================================================================
 # MAIN CONTENT - TWO COLUMNS
@@ -202,7 +201,7 @@ with col1:
     st.dataframe(profile_data, use_container_width=True, hide_index=True)
     
     # Comparison chart
-    st.markdown("#### 📊 vs NYC Average")
+    st.markdown("#### Inputs vs NYC Average")
     
     comp_data = pd.DataFrame({
         'Metric': ['Food Insecurity', 'Unemployment'],
@@ -216,7 +215,7 @@ with col1:
         y=alt.Y('Rate:Q', title='Rate (%)'),
         color=alt.Color('Type:N', scale=alt.Scale(
             domain=['Your Input', 'NYC Average'],
-            range=['#4CAF50', '#BDBDBD']
+            range=['#78c679', '#BDBDBD']
         )),
         xOffset='Type:N'
     ).properties(height=220).configure_legend(orient='bottom', title=None)
@@ -224,7 +223,7 @@ with col1:
     st.altair_chart(chart, use_container_width=True)
 
 with col2:
-    st.markdown("### 🎯 Prediction Result")
+    st.markdown("### Prediction Result")
     
     if predict_btn:
         # Prepare and scale input
@@ -256,26 +255,26 @@ with col2:
             st.progress(proba[0])
         
         st.markdown("---")
-        st.markdown("### 📢 Recommended Actions")
+        st.markdown("### Recommended Actions")
         
         if prediction == 0:
             st.markdown("""
-            - 📍 **Add new food sites** in this area
-            - 🕐 **Extend hours** at existing locations  
-            - 🤝 **Partner** with local organizations
-            - 📊 **Prioritize** in next funding cycle
+            - **Add new food sites** in this area
+            - **Extend hours** at existing locations  
+            - **Partner** with local organizations
+            - **Prioritize** in next funding cycle
             """)
         else:
             st.markdown("""
-            - ✅ **Maintain** current service levels
-            - 📈 **Monitor** for changes in need
-            - 🔄 **Share** best practices with other areas
+            - **Maintain** current service levels
+            - **Monitor** for changes in need
+            - **Share** best practices with other areas
             """)
     else:
         st.info("👈 Enter neighborhood details and click **Predict Coverage**")
         
         st.markdown("---")
-        st.markdown("### 💡 Quick Guide")
+        st.markdown("### Quick Guide")
         st.markdown("""
         **Likely LOW coverage:**
         - High food insecurity + No weekend hours
@@ -304,7 +303,7 @@ with tab1:
             'Score': [0.86, 0.91, 0.92, 0.86]
         })
         
-        bar = alt.Chart(metrics_df).mark_bar(color='#4CAF50', cornerRadiusTopRight=5, cornerRadiusTopLeft=5).encode(
+        bar = alt.Chart(metrics_df).mark_bar(color='#78c679', cornerRadiusTopRight=5, cornerRadiusTopLeft=5).encode(
             x=alt.X('Metric:N', axis=alt.Axis(labelAngle=0, title='')),
             y=alt.Y('Score:Q', scale=alt.Scale(domain=[0,1]), title='Score')
         ).properties(height=280)
@@ -415,24 +414,7 @@ with tab2:
     """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("#### 📊 Factor Importance Summary")
     
-    # Simple bar chart showing impact
-    impact_data = pd.DataFrame({
-        'Factor': ['Soup Kitchen', 'Weekend Hours', 'High Shelter', 'Unemployment', 'Food Insecurity'],
-        'Impact': [1.03, 0.97, 0.78, 0.40, -1.34],
-        'Direction': ['Helps', 'Helps', 'Helps', 'Helps', 'Hurts']
-    })
-    
-    impact_chart = alt.Chart(impact_data).mark_bar().encode(
-        x=alt.X('Impact:Q', title='Impact on Coverage (+ = helps, - = hurts)'),
-        y=alt.Y('Factor:N', sort=None, title=''),
-        color=alt.Color('Direction:N', scale=alt.Scale(
-            domain=['Helps', 'Hurts'], range=['#4CAF50', '#F44336']
-        ))
-    ).properties(height=200)
-    
-    st.altair_chart(impact_chart, use_container_width=True)
     
     st.success("**Key Insight:** Soup kitchens and weekend hours are the strongest positive factors. High food insecurity is the strongest predictor of poor coverage.")
 
@@ -447,8 +429,3 @@ with fc1:
     **🍎 Beyond the Pantry** | NYC Food Insecurity Analysis  
     *Helping policymakers identify neighborhoods that need more food assistance.*
     """)
-
-with fc2:
-    st.markdown("**Model:** 86% Accurate | **Data:** 197 NYC Neighborhoods")
-
-st.caption("Built with ❤️ for NYC communities")
