@@ -49,19 +49,17 @@
   - All datasets were aligned to the NTA level to ensure consistent neighborhood-level comparison.
  
 #### Exploratory Data Analysis (EDA)
-- Before statistical testing or modeling, we conducted structured exploratory analysis at both the neighborhood and program levels.
-  - Calculated coverage_ratio = number_of_food_sites ÷ need_proxy
-  - Examined distributions of Weighted_score, site counts, and coverage_ratio
-  - Identified skewed distributions in site density
-  - Compared high-priority vs lower-priority neighborhoods
-    - This revealed substantial variability in coverage across NTAs and suggested that structural vulnerability does not consistently translate into proportional food site presence.
-- At the **program level**, we engineered service characteristics from EFAP data:
-  - Kitchen access indicator
-  - Pantry-only indicator
-  - Both kitchen & pantry access
-  - Weekend availability
-    - These features were aggregated to the NTA level as proportions. This step was critical because neighborhoods with similar site counts differed meaningfully in service capacity. Not all food sites provide equivalent access. EDA findings directly informed downstream statistical testing and feature selection for modeling.
-
+- Before statistical testing or modeling, we conducted structured exploratory analysis at both the neighborhood and program levels. At the neighborhood level, we:
+  - Aggregated 561 EFAP sites to 197 NTAs
+  - Calculated `coverage_ratio` = `number_of_food_sites ÷ neighborhood_need_proxy`
+  - Binned neighborhoods into High vs Lower structural vulnerability using the top quartile of Weighted_score
+##### EDA Takeaway
+- Neighborhoods in the top quartile of structural vulnerability had, on average, lower coverage ratios than lower-priority neighborhoods, despite representing higher measured need. Additionally:
+  - A disproportionate share of high-priority NTAs fell into the low-coverage category
+  - Site counts were highly skewed, with several high-priority NTAs having 0–2 sites
+  - Kitchen-equipped sites were unevenly distributed, meaning equal site counts did not imply equal service capacity
+    - This early finding suggested a measurable misalignment between structural vulnerability and emergency food site distribution, which motivated formal statistical testing and classification modeling.
+    
 #### Statistical analysis (what we tested and what we found)
 - **Hypothesis**:
   - H0 (null): EFAP coverage is the same for high-priority and non-high-priority NTAs.
@@ -128,6 +126,8 @@
 - Feature effects align with our alignment analysis. Higher food insecurity increases the likelihood of low coverage, reinforcing the core finding that structural vulnerability does not automatically translate into adequate food site distribution. In contrast, unemployment, shelter concentration, soup kitchen presence, and weekend availability are associated with higher coverage. Notably, operational characteristics such as soup kitchens and weekend hours emerge as the strongest positive predictors of coverage, suggesting that program infrastructure plays a critical role in mitigating vulnerability.
 - Overall, the model demonstrates that structural and service characteristics meaningfully predict coverage outcomes. While some targeting mechanisms appear to exist, persistent misalignment remains, particularly in neighborhoods where food insecurity is high but site infrastructure is limited. The model strengthens the dashboard findings by showing that coverage gaps are not random; they are systematically associated with measurable structural factors.
 
+--
+
 ### Streamlit app (model demo)
 - The Streamlit app is a simple “neighborhood profile” to show model output in a decision-friendly way: Users input neighborhood indicators (food insecurity rate, unemployment, shelter context, service availability).
 - The app returns a predicted coverage risk label (example: “LOW COVERAGE”) and a confidence score.
@@ -152,10 +152,20 @@
 
 
 ### Limitations
-- Coverage Ratio uses site count, not capacity or utilization. Two neighborhoods with the same number of sites can still have very different real access.
-- EFAP dataset represents listed sites, not guaranteed daily availability.
-- “Need” is modeled through composite indicators and may not capture every lived reality (examples: undocumented access barriers, stigma, disability access).
+- **Coverage Ratio measures site count, not service capacity**.
+  - The coverage_ratio is calculated using the number of EFAP sites relative to neighborhood-level need proxies. It does not account for site capacity, daily volume served, staffing levels, or demand intensity. Two neighborhoods with the same number of sites may have very different operational realities.
 
+- **EFAP data reflects registered sites, not real-time availability.**
+  - The EFAP dataset captures listed program locations and service characteristics but does not guarantee consistent daily operation, inventory sufficiency, or absence of temporary closures.
+
+- **Need is measured using composite structural indicators.**
+  - Structural vulnerability is represented through the `weighted_score`, which combines food insecurity, unemployment, and supply gap metrics. While useful for neighborhood comparison, it remains a proxy and does not directly measure individual-level food hardship.
+
+- **Shelter population data is aggregated at the community district level.**
+  - Shelter counts are mapped to NTAs using CDTA2020. Because shelter data is not available at the exact neighborhood or site level, shelter concentration is treated as contextual rather than precise neighborhood-level exposure.
+
+- **The analysis supports correlation, not causation.**
+  - While statistical tests and logistic regression identify meaningful relationships between structural vulnerability and coverage outcomes, the cross-sectional design does not establish causal effects between food site placement and food insecurity.
 
 
 ---
@@ -179,9 +189,10 @@ Because the data operate at different geographic levels and rely on proxies, con
 ---
 
 ## Links to Final Deliverables
-- Interactive Tableau Dashboard: [WIP]
+- Interactive Tableau Dashboard: [https://public.tableau.com/app/profile/ayema.qureshi/viz/CID-foodaccess/Dashboard2?publish=yes] 
 - Local Streamlit Application: [WIP]
 - Technical Report (PDF):[Link to deliverables/Deliverable_Report.pdf]
+- Schema: [https://lucid.app/lucidchart/bfb16d31-5bda-4eee-92ad-83c0d3d41102/edit?viewport_loc=-2043%2C253%2C2995%2C1708%2C0_0&invitationId=inv_5e1df819-e856-440f-b2ce-1720ed73a113] 
 
 ---
 
