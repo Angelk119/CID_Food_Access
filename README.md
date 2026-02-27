@@ -3,7 +3,7 @@
 - Identifying where Emergency Food Assistance Program (EFAP) supply does not scale with structural vulnerability across NYC neighborhoods.
 
 ## Key Takeaway
-- In 2024, EFAP site coverage is not evenly aligned with structural vulnerability across NYC Neighborhood Tabulation Areas (NTAs). Among high-priority NTAs (top 25% by structural vulnerability), 56% fall below the city median coverage, and 16% have zero EFAP sites. Statistical testing also shows that coverage differs meaningfully between high-priority and other NTAs (p = 0.001167), supporting the conclusion that misalignment is real, not noise.
+- In 2024, EFAP site coverage is not evenly aligned with structural vulnerability across NYC Neighborhood Tabulation Areas (NTAs). Among high-priority NTAs (top 25% by structural vulnerability), **56%** fall below the city median coverage, and **16%** have zero EFAP sites. Statistical testing also shows that coverage differs meaningfully between high-priority and other NTAs (p = 0.001167), supporting the conclusion that misalignment is real, not noise.
 
 
 ## Critical Research Question
