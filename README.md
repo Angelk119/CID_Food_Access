@@ -19,7 +19,9 @@
   - EFAP site locations and service attributes (food supply)
   - Shelter context indicators (used as added context and in the model as an “extended feature”)
   - NTA geography (for mapping and joins)
-- Sources include NYC Open Data and NYC Council published datasets (plus related city documentation).
+- DHS Shelter Census & community district shelter datasets – provide shelter population trends and geographic concentration.
+- Emergency Food Assistance Program (EFAP) – provides locations and characteristics of emergency food sites.
+- Neighborhood Food Insecurity Prioritization dataset – measures neighborhood-level food insecurity and vulnerability.
 
 ### Key terminology 
 - **Neighborhood Tabulation Area (NTA):** A NYC-defined neighborhood geography used for reporting and planning. Each record in our analysis represents one NTA.
@@ -36,12 +38,49 @@
   - We use median thresholds to divide neighborhoods into clear visual zones without letting a few extreme values dominate the story. Medians allow a clean “above typical vs below typical” comparison across NTAs, which is why we use them in the alignment scatterplot and in the under-served “action” view (Referring to the Dashboard)
 
 
-#### Analytical approach
+### Analytical approach
 - We answer the CRQ in two parts:
   - _Alignment analysis_ (dashboard): Compare structural vulnerability (Weighted Score) vs EFAP coverage (Coverage Ratio) and identify mismatch zones.
   - _Predictive modeling_ (Model): Predict whether an NTA is likely to be a low coverage area using structural + service context features.
 
-#### Dashboard (Tableau) story
+#### Methodology
+- Data Engineering & Integration
+  - This project integrates multiple datasets operating at different geographic levels and grains. EFAP program-level data (561 sites) were aggregated to the Neighborhood Tabulation Area (NTA) level using ZIP-to-NTA mapping. Neighborhood Prioritization data (197 NTAs) served as the primary need indicator through its composite Weighted_score, which captures food insecurity, unemployment, and supply gap. Shelter population and infrastructure datasets, reported at the community district (CDTA) level, were mapped to NTAs using the CDTA2020 crosswalk to provide contextual shelter concentration.
+  - All datasets were aligned to the NTA level to ensure consistent neighborhood-level comparison.
+ 
+#### Exploratory Data Analysis (EDA)
+- Before statistical testing or modeling, we conducted structured exploratory analysis at both the neighborhood and program levels.
+  - Calculated coverage_ratio = number_of_food_sites ÷ need_proxy
+  - Examined distributions of Weighted_score, site counts, and coverage_ratio
+  - Identified skewed distributions in site density
+  - Compared high-priority vs lower-priority neighborhoods
+    - This revealed substantial variability in coverage across NTAs and suggested that structural vulnerability does not consistently translate into proportional food site presence.
+- At the **program level**, we engineered service characteristics from EFAP data:
+  - Kitchen access indicator
+  - Pantry-only indicator
+  - Both kitchen & pantry access
+  - Weekend availability
+    - These features were aggregated to the NTA level as proportions. This step was critical because neighborhoods with similar site counts differed meaningfully in service capacity. Not all food sites provide equivalent access. EDA findings directly informed downstream statistical testing and feature selection for modeling.
+
+#### Statistical analysis (what we tested and what we found)
+- **Hypothesis**:
+  - H0 (null): EFAP coverage is the same for high-priority and non-high-priority NTAs.
+  - H1 (alternative): EFAP coverage differs between high-priority and non-high-priority NTAs.
+- **Variables**
+  - Grouping: High Priority vs Not High Priority
+  - Outcome: Coverage Ratio
+
+##### Why we used Welch’s t-test**
+- We checked assumptions and found: Coverage Ratio is not normally distributed and roup variances are not equal. So we used Welch’s t-test, which is designed for unequal variances. The Welch’s t-test p-value = `0.001167`
+  - This is statistically significant, meaning the observed difference is unlikely to be random.
+  - Effect size: Cohen’s d = `0.3526`
+    - This suggests a small-to-moderate practical difference. The effect is not just “statistically significant”, it is meaningful enough to care about in planning decisions.
+- **Interpretation:** Coverage gaps are not evenly spread. High-priority neighborhoods are more likely to have worse coverage patterns, supporting the dashboard story that supply does not reliably scale with vulnerability.
+
+
+
+
+### Dashboard (Tableau) story
 🔗 Tableau Public Dashboard (CID Food Access – Dashboard): https://public.tableau.com/views/CID-foodaccess/Dashboard2
 - The dashboard is designed as a narrative:
   1. Pressure (structural vulnerability context)
@@ -80,134 +119,69 @@
 
 
 
-#### Statistical analysis (what we tested and what we found)
-- **Hypothesis**:
-  - H0 (null): EFAP coverage is the same for high-priority and non-high-priority NTAs.
-  - H1 (alternative): EFAP coverage differs between high-priority and non-high-priority NTAs.
-- **Variables**
-  - Grouping: High Priority vs Not High Priority
-  - Outcome: Coverage Ratio
 
-##### Why we used Welch’s t-test**
-- We checked assumptions and found: Coverage Ratio is not normally distributed and roup variances are not equal. So we used Welch’s t-test, which is designed for unequal variances. The Welch’s t-test p-value = `0.001167`
-  - This is statistically significant, meaning the observed difference is unlikely to be random.
-  - Effect size: Cohen’s d = `0.3526`
-    - This suggests a small-to-moderate practical difference. The effect is not just “statistically significant”, it is meaningful enough to care about in planning decisions.
+### Predictive Model: Identifying Low Food Coverage Neighborhoods
+- To move beyond descriptive analysis, we built a logistic regression model to predict whether a Neighborhood Tabulation Area (NTA) has low or high Emergency Food Assistance Program (EFAP) coverage. The final model (Version 2.0) uses **five predictors**: food insecurity rate, unemployment rate, high shelter population flag, soup kitchen presence, and weekend availability
+  - L2 regularization was applied to stabilize coefficients while preserving interpretability, making the model suitable for policy-facing decision contexts.
+- The model was trained on 197 NYC NTAs, with 50 held out for testing. On the test set, it achieved 86% accuracy and an F1 score of approximately 0.86. Most importantly for equity planning, the model correctly identified 92% of low coverage neighborhoods (`recall_low` = 0.92) 
+  - This high recall minimizes the risk of overlooking under-served areas. The confusion matrix shows that out of 50 test NTAs, 43 were classified correctly, with only 7 total misclassifications 
+- Feature effects align with our alignment analysis. Higher food insecurity increases the likelihood of low coverage, reinforcing the core finding that structural vulnerability does not automatically translate into adequate food site distribution. In contrast, unemployment, shelter concentration, soup kitchen presence, and weekend availability are associated with higher coverage. Notably, operational characteristics such as soup kitchens and weekend hours emerge as the strongest positive predictors of coverage, suggesting that program infrastructure plays a critical role in mitigating vulnerability.
+- Overall, the model demonstrates that structural and service characteristics meaningfully predict coverage outcomes. While some targeting mechanisms appear to exist, persistent misalignment remains, particularly in neighborhoods where food insecurity is high but site infrastructure is limited. The model strengthens the dashboard findings by showing that coverage gaps are not random; they are systematically associated with measurable structural factors.
 
-###### Interpretation
-- Coverage gaps are not evenly spread. High-priority neighborhoods are more likely to have worse coverage patterns, supporting the dashboard story that supply does not reliably scale with vulnerability.
+### Streamlit app (model demo)
+- The Streamlit app is a simple “neighborhood profile” to show model output in a decision-friendly way: Users input neighborhood indicators (food insecurity rate, unemployment, shelter context, service availability).
+- The app returns a predicted coverage risk label (example: “LOW COVERAGE”) and a confidence score.
+- This turns analysis into a usable tool for discussion.
 
 
+### Actionable recommendations (based on findings)
+- These are practical moves aligned with the dashboard “under-served zone” logic:
+  - Prioritize zero-coverage high-priority NTAs first.
+    - Any high-priority neighborhood with 0 EFAP sites represents the strongest signal of a supply gap.
+  - Target expansion using the under-served zone
+    - Use the “high vulnerability + low coverage” quadrant as the shortlist for new EFAP partnerships and site placement.
+  - Improve weekend availability where risk is high
+    - The model includes weekend service as a meaningful factor. Expanding weekend hours can increase real access even when adding new sites is slow.
+  - Coordinate EFAP planning with shelter pressure areas
+    - Shelter concentration is contextual but important. Where shelter pressure is high, EFAP access should be monitored more closely to prevent compounding vulnerability.
+  - Strengthen measurement beyond site counts
+    - Site count is a starting point. If data becomes available, expand coverage measurement to include capacity, hours, eligibility, language access, and distance to sites.
+  - Implement a real-time dashboard using coverage_ratio and weighted_score to monitor whether emergency food infrastructure is proportionally meeting neighborhood vulnerability.
 
 
 
 
+### Limitations
+- Coverage Ratio uses site count, not capacity or utilization. Two neighborhoods with the same number of sites can still have very different real access.
+- EFAP dataset represents listed sites, not guaranteed daily availability.
+- “Need” is modeled through composite indicators and may not capture every lived reality (examples: undocumented access barriers, stigma, disability access).
 
-----
 
-## Overview
-
-This project examines food insecurity among children living in New York City family homeless shelters by comparing neighborhood food insecurity prioritization, shelter population concentration, and the availability of emergency food assistance sites.
-The goal is to identify whether neighborhoods with the highest shelter-related need are adequately supported with emergency food resources and to provide data-informed recommendations for equitable food access planning.
-
----
-
-## Critical Research Question
-
-How does the availability of emergency food assistance sites across Neighborhood Tabulation Areas (NTAs) compare for neighborhoods located within community districts with higher shelter population concentrations and higher food insecurity prioritization?
-
----
-
-## Key Actionable Recommendations
-
-### Policy
-
-Adopt equity-based funding that prioritizes High Priority NTAs (top 25% most structurally vulnerable) so emergency food infrastructure scales proportionally with neighborhood need.
-
-### Resource Allocation
-
-Increase and strategically place EFAP sites in neighborhoods with low coverage ratios to better align food supply with food insecurity intensity.
-
-### Data & Technology
-
-Implement a real-time dashboard using coverage_ratio and weighted_score to monitor whether emergency food infrastructure is proportionally meeting neighborhood vulnerability.
 
 ---
 
-## Stakeholders
+### Tech Stack
+- Python: Pandas, Scikit-learn, Streamlit
+- SQL: SQLite
+- Visualization: Tableau
 
-NYC Department of Homeless Services
-Mayor’s Office of Food Policy
-Children and families living in NYC shelters
-
----
-
-## Data Sources
-
-DHS Shelter Census & community district shelter datasets – provide shelter population trends and geographic concentration.
-Emergency Food Assistance Program (EFAP) – provides locations and characteristics of emergency food sites.
-Neighborhood Food Insecurity Prioritization dataset – measures neighborhood-level food insecurity and vulnerability.
-
----
-
-## Methodology
-
-### Geographic aggregation at the Neighborhood Tabulation Area (NTA) level
-
-All spatial analyses are conducted at the NTA level to ensure consistency across datasets and to enable neighborhood-level comparisons of food access and shelter-related needs.
-
-### Construction of a coverage ratio to quantify food access relative to need
-
-A coverage ratio is calculated using counts of individuals in shelter systems as a proxy for food insecurity needs, allowing food assistance availability to be evaluated relative to population demand.
-
-### Statistical testing of differences across priority and non-priority areas
-
-Mean difference tests and proportional comparisons are used to assess whether food coverage differs significantly between high-need and lower-need neighborhoods before modeling.
-
-### Logistic regression for neighborhood-level classification
-
-Coverage ratio is binned into categorical outcomes (for example, high vs low coverage), and logistic regression is used to identify neighborhood characteristics associated with inadequate food access.
-
-### Exploratory time-series analysis using ARIMAX
-
-ARIMAX models are explored to examine trends in shelter population demand over time, with results interpreted cautiously and model assumptions explicitly tested and documented.
-
----
-
-## Tech Stack
-
-Python: Pandas, Scikit-learn, Streamlit
-SQL: SQLite
-Visualization: Tableau
-
----
-
-## Key Findings
-
-Food assistance resources are unevenly distributed relative to neighborhoods with the highest concentration of family shelters.
-
-Children in shelter-dense neighborhoods face compounded barriers such as distance, limited hours, and transportation challenges when accessing food.
-
-Data integration and predictive analysis reveal priority zones where targeted investment would most effectively reduce food insecurity risk.
-
----
 
 ## Ethics & Equity
 
-This project centers children and families experiencing homelessness, recognizing that institutional datasets often reflect system-level perspectives rather than lived experience.
-Findings are framed to avoid harm, prevent misinterpretation, and support equitable policy decisions rather than surveillance or deficit narratives.
-Shelter data are not available at the individual shelter-site or exact neighborhood location level, we cannot make causal claims about how specific food programs affect shelter residents.
+This analysis focuses on neighborhood-level patterns, not individual families. All shelter data are aggregated at the community district level and mapped to Neighborhood Tabulation Areas (NTAs) using a geographic crosswalk. Because we do not observe individual shelter locations or individual-level food access outcomes, this project does not make causal claims about how specific emergency food programs affect shelter residents. Shelter concentration and food insecurity prioritization scores are used as contextual indicators, not direct measures of individual need.
+
+Power shows up in how data are structured and reported. City agencies and institutions determine what gets measured and published, while families living in shelters are represented only through aggregated counts. As a result, this analysis reflects system-level patterns rather than lived experience. We explicitly acknowledge that the presence of a food site in a neighborhood does not guarantee consistent or sufficient access.
+
+To reduce the risk of misinterpretation, findings are framed around alignment between structural vulnerability and emergency food site distribution. High-priority labels describe composite indicators of food insecurity, unemployment, and supply gap, not the performance or behavior of a neighborhood. The goal is to evaluate whether resource placement aligns with measured need, not to assign blame or rank communities.
+
+Because the data operate at different geographic levels and rely on proxies, conclusions are limited to descriptive and correlational insights. This transparency ensures the analysis supports informed policy discussion without overstating what the data can prove.
 
 ---
 
 ## Links to Final Deliverables
-
-Interactive Tableau Dashboard: [WIP]
-
-Local Streamlit Application: [WIP]
-
-Technical Report (PDF):
-[Link to deliverables/Deliverable_Report.pdf]
+- Interactive Tableau Dashboard: [WIP]
+- Local Streamlit Application: [WIP]
+- Technical Report (PDF):[Link to deliverables/Deliverable_Report.pdf]
 
 ---
 
@@ -232,10 +206,24 @@ We acknowledge and appreciate the work of the New York City Open Data program an
 ## Contributors and Roles
 
 - **Angel Bautista — Project Manager** | [LinkedIn](https://www.linkedin.com/in/angelgbautista/)
+   - Contributed to policy interpretation and executive messaging
+   - Coordinated cross-functional workflow and milestone tracking
 - **Ayema Qureshi — Analytics Engineer / Data Modeler** | [LinkedIn](https://www.linkedin.com/in/ayemaqureshi/)
+  - Defined project scope and research framing
+  - Led stakeholder narrative alignment and presentation strategy
+  - Designed star schema and relational data model for NTA-level analysis
+  - Conducted exploratory data analysis (EFAP + structural indicators)
+  - Built Tableau dashboard (alignment framework, KPI logic, quadrant analysis)
+  - Co-developed statistical testing and modeling documentation
+  - Translated technical findings into executive-facing insights and presentation materials 
 - **Ibrahima Diallo — Data Engineer / ETL Lead** | [LinkedIn](https://www.linkedin.com/in/ibranova/)
+  - Built ETL pipelines and data processing scripts
+  - Led statistical modeling implementation (Logistic Regression, Model 2 selection)
+  - Developed and deployed Streamlit prediction application
+  - Conducted model evaluation, validation, and performance reporting
+  - Co-developed technical documentation and presentation materials
 
----
+--- 
 
 ## APA References
 
