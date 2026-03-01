@@ -147,21 +147,19 @@ The model reinforces the dashboard findings: structural vulnerability alone does
 - The app returns a predicted coverage risk label (example: “LOW COVERAGE”) and a confidence score.
 - This turns analysis into a usable tool for discussion.
 
-
-### Actionable recommendations (based on findings)
-- These are practical moves aligned with the dashboard “under-served zone” logic:
-  - Prioritize zero-coverage high-priority NTAs first.
-    - Any high-priority neighborhood with 0 EFAP sites represents the strongest signal of a supply gap.
-  - Target expansion using the under-served zone
-    - Use the “high vulnerability + low coverage” quadrant as the shortlist for new EFAP partnerships and site placement.
-  - Improve weekend availability where risk is high
-    - The model includes weekend service as a meaningful factor. Expanding weekend hours can increase real access even when adding new sites is slow.
-  - Coordinate EFAP planning with shelter pressure areas
-    - Shelter concentration is contextual but important. Where shelter pressure is high, EFAP access should be monitored more closely to prevent compounding vulnerability.
-  - Strengthen measurement beyond site counts
-    - Site count is a starting point. If data becomes available, expand coverage measurement to include capacity, hours, eligibility, language access, and distance to sites.
-  - Implement a real-time dashboard using coverage_ratio and weighted_score to monitor whether emergency food infrastructure is proportionally meeting neighborhood vulnerability.
-
+## Actionable Recommendations
+- **Prioritize zero-coverage high-priority NTAs**
+  - High-vulnerability neighborhoods with 0 EFAP sites signal the most urgent gaps.
+- **Target expansion in the under-served zone**
+  - Focus on NTAs with high vulnerability + low coverage for new partnerships and site placement.
+- **Expand weekend availability**
+  - Weekend access is a meaningful predictor of coverage and can improve access without adding new sites.
+- **Align planning with shelter pressure areas**
+  - Monitor EFAP coverage closely where shelter concentration is high.
+- **Strengthen coverage measurement**
+  - Move beyond site counts to include capacity, hours, eligibility, and accessibility where possible.
+- **Monitor alignment over time**
+  - Use `coverage_ratio` and `weighted_score` to track whether infrastructure scales with vulnerability.
 
 
 
