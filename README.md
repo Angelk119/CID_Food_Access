@@ -23,20 +23,23 @@
 - Emergency Food Assistance Program (EFAP) – provides locations and characteristics of emergency food sites.
 - Neighborhood Food Insecurity Prioritization dataset – measures neighborhood-level food insecurity and vulnerability.
 
-### Key terminology 
-- **Neighborhood Tabulation Area (NTA):** A NYC-defined neighborhood geography used for reporting and planning. Each record in our analysis represents one NTA.
-- **Structural vulnerability:** refers to the underlying socioeconomic conditions that make a neighborhood more likely to experience hardship, including food insecurity. In this project, it is measured by the Weighted Score, which combines food insecurity rates with broader risk factors like unemployment and family-related pressures to reflect overall systemic disadvantage.
-  - Higher structural vulnerability means a neighborhood faces deeper, more persistent barriers to stable food access.
-- **Weighted Score (Structural Vulnerability):** Weighted Score is a composite measure of structural vulnerability, combining food insecurity and broader socioeconomic risk factors (as defined in our project data dictionary).
-  - Higher _Weighted Score_ means the neighborhood ranks as more structurally vulnerable.
-- **High-Priority NTA:** the top 25% of neighborhoods ranked by Weighted Score.
-  - This is a ranking-based definition, not a label we assign manually.
-- **Coverage Ratio**: our “supply relative to pressure” metric:
-  - Coverage Ratio = Total EFAP Sites ÷ Food Insecurity Percentage
-  - It is not a perfect measure of service capacity, but it is a consistent way to compare whether EFAP site presence scales with food insecurity pressure.
-- Why we use medians (and quadrant logic)
-  - We use median thresholds to divide neighborhoods into clear visual zones without letting a few extreme values dominate the story. Medians allow a clean “above typical vs below typical” comparison across NTAs, which is why we use them in the alignment scatterplot and in the under-served “action” view (Referring to the Dashboard)
+### Key Terminology
 
+- **Neighborhood Tabulation Area (NTA):** NYC-defined neighborhood geography used for planning and reporting. Each record represents one NTA.
+- **Structural Vulnerability:** Underlying socioeconomic conditions that increase a neighborhood’s risk of hardship, including food insecurity.
+  - In this project, measured using the **Weighted Score**.
+  - Higher structural vulnerability indicates deeper, systemic barriers to stable food access.
+- **Weighted Score (Structural Vulnerability):** Composite measure combining food insecurity and related socioeconomic risk factors (see data dictionary).
+  - Higher _Weighted Score_ = higher structural vulnerability.
+- **High-Priority NTA:** Top 25% of neighborhoods ranked by Weighted Score.
+  - Ranking-based definition, not manually assigned.
+- **Coverage Ratio:** “Supply relative to pressure” metric.
+  - Coverage Ratio = Total EFAP Sites ÷ Food Insecurity Percentage
+  - Not a perfect measure of service capacity, but a consistent way to compare whether supply scales with need.
+- **Why we use medians (quadrant logic):**
+  - Median thresholds divide NTAs into clear, comparable zones.
+  - Prevents extreme values from distorting interpretation.
+  - Supports the alignment scatterplot and under-served “action” view in the dashboard.
 
 ### Analytical approach
 - We answer the CRQ in two parts:
@@ -57,7 +60,8 @@
   - Classified NTAs into High vs. Lower priority using the top quartile of Weighted_score
 - **EDA Findings**
   - High-priority NTAs had lower average coverage ratios despite higher measured need
-  - A disproportionate share of high-priority NTAs fell into the low-coverage category
+  - Structural vulnerability outpaces food site distribution across NYC, especially in Queens and Brooklyn.
+    - <img width="400" alt="Screenshot" src="https://github.com/user-attachments/assets/d7b1063a-1719-4497-882e-230150ef6677" />
   - Site counts were highly skewed, with several high-priority NTAs having 0–2 sites
   - Kitchen-equipped sites were unevenly distributed
     - <img width="400" alt="EDA Screenshot" src="https://github.com/user-attachments/assets/c39942d7-28da-4cb0-949a-962d7ec68d65" />
@@ -66,21 +70,23 @@ These patterns indicated a measurable misalignment between structural vulnerabil
 
 ---
 
-### Statistical analysis (what we tested and what we found)
-- **Hypothesis**:
+### Statistical Analysis (What We Tested and Found)
+- **Hypothesis**
   - H0 (null): EFAP coverage is the same for high-priority and non-high-priority NTAs.
   - H1 (alternative): EFAP coverage differs between high-priority and non-high-priority NTAs.
 - **Variables**
-  - Grouping: High Priority vs Not High Priority
+  - Grouping: High Priority vs. Not High Priority
   - Outcome: Coverage Ratio
-
-##### Why we used Welch’s t-test**
-- We checked assumptions and found: Coverage Ratio is not normally distributed and roup variances are not equal. So we used Welch’s t-test, which is designed for unequal variances. The Welch’s t-test p-value = `0.001167`
-  - This is statistically significant, meaning the observed difference is unlikely to be random.
-  - Effect size: Cohen’s d = `0.3526`
-    - This suggests a small-to-moderate practical difference. The effect is not just “statistically significant”, it is meaningful enough to care about in planning decisions.
-- **Interpretation:** Coverage gaps are not evenly spread. High-priority neighborhoods are more likely to have worse coverage patterns, supporting the dashboard story that supply does not reliably scale with vulnerability.
-
+- **Test Used: Welch’s t-test**
+  - Coverage Ratio was not normally distributed and group variances were unequal.
+  - Welch’s t-test accounts for unequal variances.
+  - p-value = 0.001167 → statistically significant difference.
+- **Effect Size**
+  - Cohen’s d = 0.3526
+  - Indicates a small-to-moderate practical difference.
+- **Interpretation**
+  - High-priority neighborhoods are more likely to have lower coverage.
+  - Coverage gaps are systematic, supporting the finding that supply does not reliably scale with vulnerability.
 
 
 ---
@@ -100,22 +106,19 @@ These patterns indicated a measurable misalignment between structural vulnerabil
       - Lower Priority (low need + low coverage)
   - Action View: Ranked list of high-priority NTAs by lowest coverage to support targeted intervention.
 
-### KPI definitions 
-- **KPI 1: “% of high-priority NTAs under-served”**
-  - This tells us: Out of the neighborhoods that are most structurally vulnerable, how many have below-typical EFAP coverage?
-  - In our results, 56% of high-priority NTAs are below the city median coverage.
- 
-- **KPI 2: “Average coverage in high-priority NTAs”**
-  - This tells us: On average, what does coverage look like across high-priority NTAs?
-  - This can feel like it “contradicts” KPI 1 because averages can be pulled up by a smaller number of better-covered neighborhoods, while KPI 1 is counting how many fall below a typical benchmark (the median). Both can be true at once:
-    - The average might look OK, while most high-priority areas are still below the median, meaning coverage is unevenly distributed inside the high-priority group.
-
-- **KPI 3: “% of high-priority NTAs with zero EFAP sites”**
-  - This tells us: How many of the most vulnerable neighborhoods have no EFAP sites at all?
-  - In our results, 16% of high-priority NTAs have zero EFAP sites.
-  - City median coverage matters in this context because the median is the “middle neighborhood” benchmark. Half of NTAs are above it and half are below it. We use it to avoid extreme outliers and to make the “under-served vs not under-served” classification clear and defensible.
-
-
+### KPI Definitions
+- **KPI 1: % of High-Priority NTAs Under-Served**
+  - Measures how many structurally vulnerable neighborhoods fall below the city median coverage.
+  - Result: 56% of high-priority NTAs are below median coverage.
+- **KPI 2: Average Coverage in High-Priority NTAs**
+  - Measures overall average coverage within the high-priority group.
+  - Averages may appear stable even if many NTAs fall below the median, indicating uneven distribution within the group.
+- **KPI 3: % of High-Priority NTAs with Zero EFAP Sites**
+  - Measures how many vulnerable neighborhoods have no EFAP presence.
+  - Result: 16% of high-priority NTAs have zero sites.
+- **Why Use the Median**
+  - The median represents a “typical neighborhood” benchmark.
+  - It prevents outliers from distorting results and supports a clear under-served classification.
 
 
 ## Predictive Model: Identifying Low Food Coverage Neighborhoods
@@ -153,21 +156,22 @@ These patterns indicated a measurable misalignment between structural vulnerabil
 
 
 ### Limitations
-- **Coverage Ratio measures site count, not service capacity**.
-  - The coverage_ratio is calculated using the number of EFAP sites relative to neighborhood-level need proxies. It does not account for site capacity, daily volume served, staffing levels, or demand intensity. Two neighborhoods with the same number of sites may have very different operational realities.
-
+- **Coverage Ratio measures site count, not service capacity.**
+  - Calculated as EFAP sites relative to neighborhood-level need proxies.
+  - Does not account for site capacity, daily volume, staffing, or demand intensity.
+  - Equal site counts may reflect very different operational realities.
 - **EFAP data reflects registered sites, not real-time availability.**
-  - The EFAP dataset captures listed program locations and service characteristics but does not guarantee consistent daily operation, inventory sufficiency, or absence of temporary closures.
-
+  - Captures listed locations and characteristics.
+  - Does not guarantee daily operation, inventory sufficiency, or absence of temporary closures.
 - **Need is measured using composite structural indicators.**
-  - Structural vulnerability is represented through the `weighted_score`, which combines food insecurity, unemployment, and supply gap metrics. While useful for neighborhood comparison, it remains a proxy and does not directly measure individual-level food hardship.
-
-- **Shelter population data is aggregated at the community district level.**
-  - Shelter counts are mapped to NTAs using CDTA2020. Because shelter data is not available at the exact neighborhood or site level, shelter concentration is treated as contextual rather than precise neighborhood-level exposure.
-
-- **The analysis supports correlation, not causation.**
-  - While statistical tests and logistic regression identify meaningful relationships between structural vulnerability and coverage outcomes, the cross-sectional design does not establish causal effects between food site placement and food insecurity.
-
+  - Represented by `weighted_score`, combining food insecurity, unemployment, and supply gap metrics.
+  - Useful for comparison, but remains a proxy for individual hardship.
+- **Shelter data is aggregated at the community district level.**
+  - Mapped to NTAs via CDTA2020 crosswalk.
+  - Shelter concentration is contextual, not precise neighborhood-level exposure.
+- **Findings reflect correlation, not causation.**
+  - Statistical tests and modeling identify relationships between vulnerability and coverage.
+  - Cross-sectional design does not establish causal effects.
 
 ---
 
@@ -179,13 +183,11 @@ These patterns indicated a measurable misalignment between structural vulnerabil
 
 ## Ethics & Equity
 
-This analysis focuses on neighborhood-level patterns, not individual families. All shelter data are aggregated at the community district level and mapped to Neighborhood Tabulation Areas (NTAs) using a geographic crosswalk. Because we do not observe individual shelter locations or individual-level food access outcomes, this project does not make causal claims about how specific emergency food programs affect shelter residents. Shelter concentration and food insecurity prioritization scores are used as contextual indicators, not direct measures of individual need.
+This analysis examines neighborhood-level patterns, not individual families. Shelter and food access data are aggregated and mapped to NTAs using geographic crosswalks. Because we rely on proxies and do not observe individual outcomes, findings are descriptive and correlational, not causal.
 
-Power shows up in how data are structured and reported. City agencies and institutions determine what gets measured and published, while families living in shelters are represented only through aggregated counts. As a result, this analysis reflects system-level patterns rather than lived experience. We explicitly acknowledge that the presence of a food site in a neighborhood does not guarantee consistent or sufficient access.
+Structural vulnerability and food insecurity scores are used as contextual indicators of need, not direct measures of lived experience. The presence of a food site does not guarantee adequate access.
 
-To reduce the risk of misinterpretation, findings are framed around alignment between structural vulnerability and emergency food site distribution. High-priority labels describe composite indicators of food insecurity, unemployment, and supply gap, not the performance or behavior of a neighborhood. The goal is to evaluate whether resource placement aligns with measured need, not to assign blame or rank communities.
-
-Because the data operate at different geographic levels and rely on proxies, conclusions are limited to descriptive and correlational insights. This transparency ensures the analysis supports informed policy discussion without overstating what the data can prove.
+Our goal is to evaluate whether resource placement aligns with measured need, not to rank or assign blame to communities. Transparency about data limitations ensures the analysis supports informed policy discussion without overstating conclusions.
 
 ---
 
