@@ -51,16 +51,18 @@
  ---
  
 ## Exploratory Data Analysis (EDA)
-- Before statistical testing or modeling, we conducted structured exploratory analysis at both the neighborhood and program levels. At the neighborhood level, we:
+- Before formal testing or modeling, we conducted structured exploratory analysis at the neighborhood level. Key steps:
   - Aggregated 561 EFAP sites to 197 NTAs
-  - Calculated `coverage_ratio` = `number_of_food_sites ÷ neighborhood_need_proxy`
-  - Binned neighborhoods into High vs Lower structural vulnerability using the top quartile of Weighted_score
-### EDA Takeaway
-- Neighborhoods in the top quartile of structural vulnerability had, on average, lower coverage ratios than lower-priority neighborhoods, despite representing higher measured need. Additionally:
+  - Created a coverage_ratio (sites relative to neighborhood need)
+  - Classified NTAs into High vs. Lower priority using the top quartile of Weighted_score
+- **EDA Findings**
+  - High-priority NTAs had lower average coverage ratios despite higher measured need
   - A disproportionate share of high-priority NTAs fell into the low-coverage category
   - Site counts were highly skewed, with several high-priority NTAs having 0–2 sites
-  - Kitchen-equipped sites were unevenly distributed, meaning equal site counts did not imply equal service capacity
-    - This early finding suggested a measurable misalignment between structural vulnerability and emergency food site distribution, which motivated formal statistical testing and classification modeling.
+  - Kitchen-equipped sites were unevenly distributed
+    - <img width="400" alt="EDA Screenshot" src="https://github.com/user-attachments/assets/c39942d7-28da-4cb0-949a-962d7ec68d65" />
+
+These patterns indicated a measurable misalignment between structural vulnerability and food site distribution, motivating formal statistical testing and predictive modeling.
 
 ---
 
@@ -86,24 +88,17 @@
 ## Dashboard (Tableau) story
 🔗 Tableau Public Dashboard (CID Food Access – Dashboard): https://public.tableau.com/views/CID-foodaccess/Dashboard2
 - The dashboard is designed as a narrative:
-  1. Pressure (structural vulnerability context)
-     - Map shows how food insecurity pressure varies across NTAs.
-  2. Supply distribution (EFAP presence)
-     - Bar chart shows how EFAP sites are distributed across NTAs.
-     - With a borough filter, it shows where EFAP supply is concentrated within that borough.
-  3. Alignment vs misalignment (4-zone view)
-     - We split the city into four zones using medians of:
-       - `X-axis`: structural vulnerability (Weighted Score or priority score used for need)
-       - `Y-axis`: Coverage Ratio
-       - Zones:
-         - **Aligned**: higher vulnerability + higher coverage
-         - **Under-Served**: higher vulnerability + lower coverage
-         - **Over-Served**: lower vulnerability + higher coverage
-         - **Lower Priority**: lower vulnerability + lower coverage
-  4. Action view (zoom into the under-served zone)
-     - A ranked list of high-priority NTAs ordered by Coverage Ratio from lowest upward.
-     - This is meant to answer: “Where should decision makers act first?”
-     - _Why there are 0s in the action chart_: A 0% coverage value means an NTA has zero EFAP sites in the EFAP dataset, so the Coverage Ratio becomes zero. Those NTAs represent the most severe supply gaps because there is no EFAP presence at all.
+  - Need (Structural Vulnerability): Map visualizes food insecurity pressure across NTAs.
+  - Supply (EFAP Distribution): Bar chart shows where EFAP sites are concentrated.
+  - Alignment vs. Misalignment (4-Zone View): Scatterplot splits NTAs by
+    - X-axis: Structural Vulnerability
+    - Y-axis: Coverage Ratio
+    - Zones identify:
+      - Aligned (high need + high coverage)
+      - Under-Served (high need + low coverage)
+      - Over-Served (low need + high coverage)
+      - Lower Priority (low need + low coverage)
+  - Action View: Ranked list of high-priority NTAs by lowest coverage to support targeted intervention.
 
 ### KPI definitions 
 - **KPI 1: “% of high-priority NTAs under-served”**
