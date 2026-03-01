@@ -122,12 +122,22 @@ These patterns indicated a measurable misalignment between structural vulnerabil
 
 
 ## Predictive Model: Identifying Low Food Coverage Neighborhoods
-- To move beyond descriptive analysis, we built a logistic regression model to predict whether a Neighborhood Tabulation Area (NTA) has low or high Emergency Food Assistance Program (EFAP) coverage. The final model (Version 2.0) uses **five predictors**: food insecurity rate, unemployment rate, high shelter population flag, soup kitchen presence, and weekend availability
-  - L2 regularization was applied to stabilize coefficients while preserving interpretability, making the model suitable for policy-facing decision contexts.
-- The model was trained on 197 NYC NTAs, with 50 held out for testing. On the test set, it achieved 86% accuracy and an F1 score of approximately 0.86. Most importantly for equity planning, the model correctly identified 92% of low coverage neighborhoods (`recall_low` = 0.92) 
-  - This high recall minimizes the risk of overlooking under-served areas. The confusion matrix shows that out of 50 test NTAs, 43 were classified correctly, with only 7 total misclassifications 
-- Feature effects align with our alignment analysis. Higher food insecurity increases the likelihood of low coverage, reinforcing the core finding that structural vulnerability does not automatically translate into adequate food site distribution. In contrast, unemployment, shelter concentration, soup kitchen presence, and weekend availability are associated with higher coverage. Notably, operational characteristics such as soup kitchens and weekend hours emerge as the strongest positive predictors of coverage, suggesting that program infrastructure plays a critical role in mitigating vulnerability.
-- Overall, the model demonstrates that structural and service characteristics meaningfully predict coverage outcomes. While some targeting mechanisms appear to exist, persistent misalignment remains, particularly in neighborhoods where food insecurity is high but site infrastructure is limited. The model strengthens the dashboard findings by showing that coverage gaps are not random; they are systematically associated with measurable structural factors.
+To move beyond descriptive analysis, we built a logistic regression model to predict whether an NTA has low EFAP coverage.
+- **Predictors (5):** food insecurity rate, unemployment rate, high shelter population flag, soup kitchen presence, weekend availability  
+- **Regularization:** L2 applied for stability and interpretability  
+- **Data:** 197 NTAs (50 held out for testing)
+### Performance
+- Accuracy: 86%  
+- F1 Score: ~0.86  
+- Recall (low coverage): 92%  
+  - The model correctly identified 92% of under-served neighborhoods.
+  - 43 of 50 test NTAs were classified correctly.
+### Key Findings
+- Higher food insecurity increases the likelihood of low coverage.
+- Operational infrastructure (soup kitchens, weekend access) strongly predicts higher coverage.
+- Coverage gaps are not random; they are systematically associated with structural and service factors.
+
+The model reinforces the dashboard findings: structural vulnerability alone does not guarantee adequate food site distribution.
 
 ---
 
