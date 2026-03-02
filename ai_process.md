@@ -54,24 +54,57 @@ AI didn’t create my research idea, but it helped me explore the data more smoo
 
 ## 1. Purpose of AI Use
 
+I used ChatGPT as a support tool throughout the project to:
+
+- Clarify statistical concepts and modeling decisions  
+- Debug Python and notebook errors  
+- Summarize EDA findings into clearer takeaways  
+- Refine documentation for conciseness and clarity  
+- Improve presentation structure and narrative flow  
+
+AI was used to enhance clarity and efficiency, not to replace analytical decision-making.
 
 ---
 
 ## 2. Example Prompts Used
 
+Examples of how I used AI during the project:
+
+- “Help me debug this error in my logistic regression model.”
+- “Summarize these EDA findings into 3 clear key takeaways.”
+- "Concise this README section down.”
+- “Help me explain this statistical result in non-technical language.”
+- “Create a clean presentation outline based on these findings.”
+- “How can I improve this visualization to make the insight clearer?”
 
 ---
 
-
 ## 3. Contribution to Final Deliverable
 
-Explain how AI supported:
+AI supported the final project in the following ways:
 
-* Visualizations
-* Data cleaning
-* Interpretation
-* Presentation writing
+- **Visualizations**
+  - Suggested ways to simplify charts and clarify labels.
+  - Helped refine dashboard storytelling structure.
+  - Advised on how to present alignment vs misalignment clearly.
 
+- **Data Cleaning**
+  - Helped validate logic in feature engineering and aggregation.
+  - Assisted in debugging transformation steps.
+  - Reviewed formulas (e.g., coverage ratio calculations) for consistency.
+
+- **Interpretation**
+  - Helped translate statistical outputs into policy-relevant language.
+  - Assisted in framing results around alignment rather than blame.
+  - Helped structure non-technical explanations of hypothesis testing and modeling.
+
+- **Presentation Writing**
+  - Refined slide wording for clarity and conciseness.
+  - Helped create transitions between slides.
+  - Assisted in organizing recommendations into actionable bullets.
+  - Edited README documentation for professionalism and brevity.
+
+AI functioned as a drafting and clarity tool, while all modeling, analysis decisions, and interpretations were determined independently.
 ---
 
 # Ibrahima – AI Usage Process
