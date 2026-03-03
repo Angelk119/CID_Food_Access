@@ -201,8 +201,7 @@ Our goal is to evaluate whether resource placement aligns with measured need, no
 
 ## Links to Final Deliverables
 - Interactive Tableau Dashboard: [https://public.tableau.com/app/profile/ayema.qureshi/viz/CID-foodaccess/Dashboard2?publish=yes] 
-- Local Streamlit Application: [WIP]
-- Technical Report (PDF):[Link to deliverables/Deliverable_Report.pdf]
+- Local Streamlit Application: https://beyondthepantry.streamlit.app
 - Schema: [https://lucid.app/lucidchart/bfb16d31-5bda-4eee-92ad-83c0d3d41102/edit?viewport_loc=-2043%2C253%2C2995%2C1708%2C0_0&invitationId=inv_5e1df819-e856-440f-b2ce-1720ed73a113] 
 
 ---
